@@ -1,3 +1,4 @@
 node_modules/
-orgs.csv
+*.csv
+*.xlsx
 .env

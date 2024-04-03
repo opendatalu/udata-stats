@@ -40,8 +40,8 @@ async function main() {
     let orgs = data['data']
 
     // csv header
-    console.log('name ; page ; NR datasets ; NR resources ; NR reuses published by the organisation ; NR members ; Licenses ; Formats' + (countDiscussions?' ; NR Discussions':''))
-    orgs = orgs.filter(e => {return e.badges.length !== 0})
+    console.log('name ; page ; Official ; NR datasets ; NR resources ; NR reuses published by the organisation ; NR members ; Licenses ; Formats' + (countDiscussions?' ; NR Discussions':''))
+    // orgs = orgs.filter(e => {return e.badges.length !== 0})
     
     for (const org of orgs) {
         const datasets = (await getDatasets(org.id)).filter(e => e.private === false)
@@ -51,6 +51,7 @@ async function main() {
         const formats = datasets.flatMap(e => e.resources).map(e => e.format)
         const infoLicenses = getFrequencies(licenses)
         const infoFormats = getFrequencies(formats)
+        const official = org.badges.length !== 0
         let discussionsCount = 0
         if (countDiscussions) {
             for (const ds of datasets) {
@@ -58,7 +59,7 @@ async function main() {
                 discussionsCount += disc.length
             }
         }
-        const results = [org.name.replace(/;/g,','), org.page, datasets.length, resources, reuses.length, org.members.length, infoLicenses, infoFormats]
+        const results = [org.name.replace(/;/g,','), org.page, official.toString(), datasets.length, resources, reuses.length, org.members.length, infoLicenses, infoFormats]
         if (countDiscussions) {
             results.push(discussionsCount)
         }
